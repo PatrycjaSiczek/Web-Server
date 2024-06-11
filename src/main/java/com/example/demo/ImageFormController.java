@@ -1,23 +1,30 @@
 package com.example.demo;
 
-import ch.qos.logback.core.model.Model;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import java.io.ByteArrayInputStream;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Base64;
 
 //Zadanie 8
+@RestController
 public class ImageFormController {
 
     private BufferedImage image1;
     private String Base;
     private ImageController increase;
 
-    public BufferedImage getImage1(BufferedImage image) {
+    public BufferedImage getImage1() {
         return image1;
     }
 
@@ -56,12 +63,7 @@ public class ImageFormController {
         }
     }
 
-    @GetMapping("/")
-    public String index(){
-        return "index";
-    }
-
-    @PostMapping("/upload")
+    @PostMapping("upload")
     public String upload(@RequestParam("file") MultipartFile file, @RequestParam("factor") int factor,  Model model) {
         if (file.isEmpty()) {
             model.addAttribute("message", "error");
@@ -70,20 +72,26 @@ public class ImageFormController {
 
         try {
             byte[] photo =file.getBytes();
-            String encodedImage = Base64.getEncoder().encodeToString(file.getBytes());
-            Base = increase.increaseImageBrigthness(encodedImage,factor);
-            model.addAttribute("image", Base);
+            String encodedImage = Base64.getEncoder().encodeToString(photo);
+            ImageRequest request = new ImageRequest(encodedImage, factor);
+            byte[] imageBytes = Base64.getDecoder().decode(request.getImageBase());
+            BufferedImage bf = ImageIO.read(new ByteArrayInputStream(imageBytes));
+            increaseBrightness(bf, factor);
+            model.addAttribute("image", bf);
             return "image";
         } catch (IOException e) {
             model.addAttribute("message", "error: " + e.getMessage());
             return "index";
         }
     }
+    @RequestMapping("index")
+    public String index() {
+        return "index.html";
+    }
 
-
-    @GetMapping("/image")
-        public String show(Model model) {
-            model.addAttribute("image", Base);
-            return "image";
-        }
+    @GetMapping("image")
+    public String show(Model model) {
+        model.addAttribute("image", Base);
+        return "image";
+    }
 }

@@ -14,13 +14,12 @@ import java.util.List;
 //Zadanie 3
 @RestController
 public class RectangleController {
-    private List<Rectangle> rectangles = new ArrayList<>();
+    private final List<Rectangle> rectangles = new ArrayList<>();
 
     @GetMapping("rectangle")
     public Rectangle getRectangle() {
-        Rectangle rectangle = new Rectangle(30, 20,
+        return new Rectangle(30, 20,
                 150, 220, "red");
-        return rectangle;
     }
 
     @GetMapping("rectangles")
@@ -31,9 +30,9 @@ public class RectangleController {
    @GetMapping("toSvg")
    public String toSvg(){
         StringBuilder sb = new StringBuilder();
-        sb.append("<svg width=\"500\" height=\500\">");
+        sb.append("<svg width=\"500\" height=\"500\">");
         for (Rectangle rectangle : rectangles) {
-            sb.append(String.format("rectangle width=\"%d\" height=\"%d\") x=\"%d\" y=\"%d\" fill=\"%s\"/>", rectangle.getWidth(), rectangle.getHeight(), rectangle.getX(), rectangle.getY(), rectangle.getColor()));
+            sb.append(String.format("<text font-size=\"20\" y=\"50%%\"> rectangle width=\"%d\" height=\"%d\") x=\"%d\" y=\"%d\" fill=\"%s\"</text>", rectangle.getWidth(), rectangle.getHeight(), rectangle.getX(), rectangle.getY(), rectangle.getColor()));
         }
         sb.append("</svg>");
         return sb.toString();
@@ -49,8 +48,8 @@ public class RectangleController {
 
     //Zadanie 5
     @GetMapping("rectangle/{id}")
-    public Rectangle getRectangle(@PathVariable Long id) throws IOException {
-        return rectangles.get(id.intValue());
+    public Rectangle getRectangle(@PathVariable int id) throws IOException {
+        return rectangles.get(id);
     }
 
     @PutMapping("rectangle/{id}")
@@ -58,7 +57,7 @@ public class RectangleController {
         rectangles.set(id, rectangle);
     }
 
-    @DeleteMapping ("rectange/{id}")
+    @DeleteMapping ("rectangle/{id}")
         public void deleteRectangle(@PathVariable int id) {
         rectangles.remove(id);
         }
