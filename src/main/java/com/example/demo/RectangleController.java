@@ -16,6 +16,9 @@ import java.util.List;
 public class RectangleController {
     private final List<Rectangle> rectangles = new ArrayList<>();
 
+    public RectangleController() {
+        rectangles.add(new Rectangle(25, 75, 150, 250, "green"));}
+
     @GetMapping("rectangle")
     public Rectangle getRectangle() {
         return new Rectangle(30, 20,
@@ -27,8 +30,8 @@ public class RectangleController {
         return this.rectangles;
     }
 
-   @GetMapping("toSvg")
-   public String toSvg(){
+    @GetMapping("toSvg")
+    public String toSvg(){
         StringBuilder sb = new StringBuilder();
         sb.append("<svg width=\"500\" height=\"500\">");
         for (Rectangle rectangle : rectangles) {
@@ -36,9 +39,9 @@ public class RectangleController {
         }
         sb.append("</svg>");
         return sb.toString();
-   }
+    }
 
-    //Zadanie 4
+    //Zadanie 4 - dodanie w postmanie
     @PostMapping("addRectangle")
     public int addRectangle(@RequestBody Rectangle rectangle) {
         rectangles.add(rectangle);
@@ -58,7 +61,7 @@ public class RectangleController {
     }
 
     @DeleteMapping ("rectangle/{id}")
-        public void deleteRectangle(@PathVariable int id) {
+    public void deleteRectangle(@PathVariable int id) {
         rectangles.remove(id);
-        }
+    }
 }

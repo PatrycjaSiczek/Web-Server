@@ -24,13 +24,6 @@ public class ImageFormController {
     private String Base;
     private ImageController increase;
 
-    public BufferedImage getImage1() {
-        return image1;
-    }
-
-    public void setImage1(BufferedImage image1) {
-        this.image1 = image1;
-    }
 
     public void increaseBrightness(BufferedImage image, int factor) {
         for (int x = 0; x < image.getHeight(); x++) {
@@ -74,9 +67,11 @@ public class ImageFormController {
             byte[] photo =file.getBytes();
             String encodedImage = Base64.getEncoder().encodeToString(photo);
             ImageRequest request = new ImageRequest(encodedImage, factor);
+
             byte[] imageBytes = Base64.getDecoder().decode(request.getImageBase());
             BufferedImage bf = ImageIO.read(new ByteArrayInputStream(imageBytes));
             increaseBrightness(bf, factor);
+            Base = Base64.getEncoder().encodeToString(photo);
             model.addAttribute("image", bf);
             return "image";
         } catch (IOException e) {
@@ -84,6 +79,7 @@ public class ImageFormController {
             return "index";
         }
     }
+
     @RequestMapping("index")
     public String index() {
         return "index.html";
